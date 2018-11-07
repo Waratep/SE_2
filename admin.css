@@ -1,0 +1,186 @@
+/* Background */
+body{
+  background-image: url("pic/bg.png");
+}
+/* Font */
+@font-face {
+    font-family: Nithan;
+    src: url(font/Nithan.ttf);
+}
+/* logo */
+.center{
+  height: 60px;
+  display: block;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* Table */
+.fixed_header{
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+.fixed_header tbody{
+  display:block;
+  width: 100%;
+  overflow: auto;
+  height: 100%;
+}
+
+.fixed_header thead tr ,.fixed_header tbody tr{
+   display: flex;
+   flex: 1;
+}
+tr:nth-child(odd){background-color: white}
+tr:nth-child(even){background-color: #F0DDDE}
+
+.fixed_header th{
+  background-color: #EE999E;
+  color: white;
+}
+
+.fixed_header th, .fixed_header td {
+  padding: 5px;
+  text-align: center;
+  width: 200px;
+}
+.fixed_header th{
+  font-family: Nithan;
+  font-size: 15pt;
+}
+.fixed_header td,td select{
+  font-family: Nithan;
+  font-size: 14pt;
+}
+.buttonDesign a:visited,a:link{
+  color: black;
+  text-decoration: none;
+}
+
+
+.buttonDesign{
+  color: black;
+  border: 1px solid #6B626E;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.buttonDesign button:nth-child(odd){background-color: white}
+.buttonDesign button:nth-child(even){background-color: #F0DDDE}
+
+.buttonDesign :hover{
+  color: #6B626E;
+  font-weight: bold;
+  text-decoration: none;
+}
+/* popup */
+.form-popup {
+  font-family: Nithan;
+  font-size: 15pt;
+  display: none;
+  position : fixed;
+  margin : auto;
+  pointer-events: inherit;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+/* Full-width input fields */
+.form-container input[type=text]{
+  font-family: Nithan;
+  font-size: 15pt;
+  width: 100%;
+  padding-left: 5px;
+  margin: 0 0px 22px 0;
+  border: none;
+  background: #f1f1f1;
+}
+
+/* When the inputs get focus, do something */
+.form-container input[type=text]:focus{
+  background-color: #ddd;
+  outline: none;
+}
+/* Full-width input fields */
+.form-container input[type=tel]{
+  font-family: Nithan;
+  font-size: 15pt;
+  width: 100%;
+  padding-left: 5px;
+  margin: 0 0px 22px 0;
+  border: none;
+  background: #f1f1f1;
+}
+
+/* When the inputs get focus, do something */
+.form-container input[type=tel]:focus{
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Full-width input fields */
+.form-container input[type=number]{
+  font-family: Nithan;
+  font-size: 15pt;
+  width: 100%;
+  padding-left: 5px;
+  margin: 0 0px 22px 0;
+  border: none;
+  background: #f1f1f1;
+}
+
+/* When the inputs get focus, do something */
+.form-container input[type=number]:focus{
+  background-color: #ddd;
+  outline: none;
+}
+
+.form-container textarea{
+  font-family: Nithan;
+  font-size: 15pt;
+  width: 100%;
+  padding-left: 5px;
+  margin: 0 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+}
+
+/* When the inputs get focus, do something */
+.form-container textarea:focus{
+  background-color: #ddd;
+  outline: none;
+}
+.bt{
+  /* display: flow-root; */
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.bt button{
+  margin: 0px 5px;
+  padding: 5px 20px;
+  background: #EE999E;
+  color: white;
+  font-family: Nithan;
+  font-size: 15pt;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.bt :hover{
+  background: #DA6970;
+  /* color: black; */
+}
+@media (max-width: 768px) {
+  .pic-sm{
+    height: 45px;
+  }
+}

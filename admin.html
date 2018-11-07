@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Dormitory-Admin</title>
+    <link type="image/png" href="pic/icon.png" rel="shortcut icon">
+    <link rel="stylesheet" href="admin.css" >
+    <!-- bootstrap -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!-- Vue.js -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="vue-app">
+      <!-- <div class="sticky"> -->
+      <h1><img src="pic/Logo.png" class="center pic-sm"></h1>
+      <table class="fixed_header">
+        <thead>
+          <tr>
+            <th>อาคาร</th>
+            <th>ห้อง</th>
+            <th>สถานะการเช่า</th>
+            <th>ชื่อผู้เช่าหลัก</th>
+            <th>ชื่อผู้เช่ารอง</th>
+            <th>คำร้อง</th>
+            <th>สถานะการจ่ายค่าหอ</th>
+            <th>ค่าหอ</th>
+            <th>แจ้งพัสดุ</th>
+            <th>รับพัสดุ</th>
+            <th>ติดต่อ</th>
+          </tr>
+        </thead>
+         <tbody id="fix_head">
+            <tr v-for="(cus,key,index) in customer">
+              <td>{{cus.building}}</td>
+              <td>{{cus.room}}</td>
+              <td>
+              <select v-model="cus.hiringStatus">
+                <option v-on:click="sentHiringStatusToJson(key)">ว่าง</option>
+                <option v-on:click="sentHiringStatusToJson(key)">เช่าแล้ว</option>
+              </select>
+              </td>
+              <td>
+                <div class="buttonDesign" v-if="cus.hiringStatus=='เช่าแล้ว'">
+                  <a v-on:click="openform('informationCustomerFirstForm',key)">{{fullName(cus.customerFirst)}}</a>
+                </div>
+              </td>
+              <td>
+                <div class="buttonDesign" v-if="cus.hiringStatus=='เช่าแล้ว'">
+                  <a v-on:click="openform('informationCustomerSecondForm',key)">{{fullName(cus.customerSecond)}}</a>
+                </div>
+              </td>
+              <td>
+                <div class="buttonDesign" v-if="cus.hiringStatus=='เช่าแล้ว'">
+                  <a v-if="cus.request.annoy.building!==''" v-on:click="openform('requestForm',key)">รบกวน</a>
+                  <a v-else-if="cus.request.repair.electricity==true || cus.request.repair.water==true || cus.request.repair.airConditioner==true || cus.request.repair.door==true || cus.request.repair.other!==''" v-on:click="openform('requestForm',key)">ซ่อม</a>
+                  <a v-else-if="cus.request.clean.room==true || cus.request.clean.toilet==true || cus.request.clean.other==true" v-on:click="openform('requestForm',key)">ทำความสะอาด</a>
+                  <a v-else>-</a>
+                </div>
+                </td>
+              <td v-if="cus.paymentStatus && cus.hiringStatus=='เช่าแล้ว'">ชำระแล้ว</td>
+              <td v-else-if="!cus.paymentStatus && cus.hiringStatus=='เช่าแล้ว'" style="color:red;">ค้างชำระ</td>
+              <td v-else></td>
+              <td>
+                <div class="buttonDesign" v-if="cus.hiringStatus=='เช่าแล้ว'">
+                  <a v-on:click="openform('rentForm',key)">{{CalculateRent(cus.rent)}}</a>
+                </div>
+                </td>
+              <td>
+                <div class="buttonDesign" v-if="cus.hiringStatus=='เช่าแล้ว'">
+                  <a v-on:click="openform('haveObjForm',key)">มีพัสดุ</a>
+                </div>
+              </td>
+              <td>
+                <div class="buttonDesign" v-if="cus.hiringStatus=='เช่าแล้ว'">
+                  <a v-on:click="sentReceiveToJson(key)">รับ</a>
+                </div>
+              </td>
+              <td>
+                <div class="buttonDesign" v-if="cus.hiringStatus=='เช่าแล้ว'">
+                    <a v-on:click="openform('connectForm',key)">ติดต่อ</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      <!-- <h1>สถานะการเช่า : {{ hiringStatus }}</h1> -->
+      <!-- pop up the first customer -->
+      <div id="informationCustomerFirstForm" class="form-popup" >
+        <form class="form-container">
+          <label><b>ชื่อ :</b></label><input type="text" v-model="selectedCus.customerFirst.firstname" required><br>
+          <label><b>นามสกุล : </b></label><input type="text" v-model="selectedCus.customerFirst.lastname" required><br>
+          <label><b>เบอร์ : </b></label>
+          <input type="tel" name="telInput" v-model="selectedCus.customerFirst.tel" required><br>
+          <label><b>เลขบัตรประจำตัวประชาชน : </b></label>
+          <input type="text" name="idInput" v-model="selectedCus.customerFirst.id" required><br>
+          <div class="bt">
+            <button type="button" v-on:click="sentInformationFirstToJson('informationCustomerFirstForm')">บันทึก</button>
+            <button type="button" v-on:click="closeForm('informationCustomerFirstForm')">ปิด</button>
+          </div>
+        </form>
+      </div>
+      <!-- pop up the second customer -->
+      <div id="informationCustomerSecondForm" class="form-popup" >
+        <form class="form-container">
+          <label><b>ชื่อ :</b></label><input type="text" v-model="selectedCus.customerSecond.firstname" required><br>
+          <label><b>นามสกุล : </b></label><input type="text" v-model="selectedCus.customerSecond.lastname" required><br>
+          <label><b>เบอร์ : </b></label>
+          <input type="tel" name="telInput" v-model="selectedCus.customerSecond.tel" required><br>
+          <label><b>เลขบัตรประจำตัวประชาชน : </b></label>
+          <input type="text" name="idInput" v-model="selectedCus.customerSecond.id" required><br>
+          <div class="bt">
+            <button type="button" v-on:click="sentInformationSecondToJson('informationCustomerSecondForm')">บันทึก</button>
+            <button type="button" v-on:click="closeForm('informationCustomerSecondForm')">ปิด</button>
+          </div>
+        </form>
+      </div>
+      <!-- pop up request -->
+      <div id="requestForm" class="form-popup" >
+        <form class="form-container">
+          <div v-if="selectedCus.request.annoy.building!==''">
+            <label><b>รบกวน :</b></label>
+              <p>{{selectedCus.request.annoy.building}} {{selectedCus.request.annoy.room}} : {{selectedCus.request.annoy.message}}</p>
+          </div>
+          <hr>
+          <div v-if="selectedCus.request.repair.electricity==true || selectedCus.request.repair.water==true || selectedCus.request.repair.airConditioner==true || selectedCus.request.repair.door==true || selectedCus.request.repair.other!==''">
+            <label><b>ซ่อม :</b></label>
+              <p v-if="selectedCus.request.repair.electricity==true"> - ไฟ</p>
+              <p v-if="selectedCus.request.repair.water==true"> - น้ำ</p>
+              <p v-if="selectedCus.request.repair.airConditioner==true"> - แอร์</p>
+              <p v-if="selectedCus.request.repair.door==true"> - ประตู/หน้าต่าง</p>
+              <p v-if="selectedCus.request.repair.other!==''"> - {{selectedCus.request.repair.other}}</p>
+          </div>
+          <hr>
+          <div v-if="selectedCus.request.clean.room==true || selectedCus.request.clean.toilet==true || selectedCus.request.clean.other==true">
+            <label><b>ทำความสะอาด :</b></label>
+              <p v-if="selectedCus.request.clean.room==true"> - ห้องนอน</p>
+              <p v-if="selectedCus.request.clean.toilet==true"> - ห้องน้ำ</p>
+              <p v-if="selectedCus.request.clean.airConditioner==true"> - แอร์</p>
+          </div>
+          <div class="bt">
+            <button type="button" v-on:click="closeForm('requestForm')">ปิด</button>
+          </div>
+        </form>
+      </div>
+      <!-- pop up ค่าหอ -->
+      <div id="rentForm" class="form-popup" >
+        <form class="form-container">
+          <label><b>ค่าห้อง : </b></label>
+          <input type="number" v-model="selectedCus.rent.rates" required><br>
+          <label><b>ค่าไฟ(หน่วย) :  </b></label><br>
+          <input style="width:45%" type="number" v-model="selectedCus.rent.elecStart" required> -
+          <input style="width:45%" type="number" v-model="selectedCus.rent.elecEnd" required><br>
+          <label><b>ค่าน้ำ(หน่วย) :  </b></label><br>
+          <input style="width:45%" type="number" v-model="selectedCus.rent.waterStart" required> -
+          <input style="width:45%" type="number" v-model="selectedCus.rent.waterEnd" required><br>
+          <label><b>ค่าอื่นๆ : </b></label>
+          <input type="number" v-model="selectedCus.rent.otherBill"><br>
+          <div class="bt">
+            <button type="button" v-on:click="sentRentToJson('rentForm')">บันทึก</button>
+            <button type="button" v-on:click="closeForm('rentForm')">ปิด</button>
+          </div>
+        </form>
+      </div>
+      <!-- pop up มีพัสดุ -->
+      <div id="haveObjForm" class="form-popup" >
+        <form class="form-container">
+          <label><b>รหัสพัสดุ :</b></label>
+          <input type="text" v-model='textData' required><br>
+          <div class="bt">
+            <button type="button" v-on:click="sentHaveObjToJson('haveObjForm')">บันทึก</button>
+            <button type="button" v-on:click="closeForm('haveObjForm')">ปิด</button>
+          </div>
+        </form>
+      </div>
+      <!-- pop up ติดต่อ -->
+      <div id="connectForm" class="form-popup" >
+        <form class="form-container">
+          <label><b>ติดต่อ : </b></label>
+          <textarea v-model="textData"placeholder="กรอกสิ่งที่ต้องการติดต่อ" required></textarea><br>
+          <div class="bt">
+            <button type="button" v-on:click="sentConnectToJson('connectForm')">บันทึก</button>
+            <button type="button" v-on:click="closeForm('connectForm')">ปิด</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Vue.js -->
+    <script src="admin.js" charset="utf-8"></script>
+  </body>
+</html>
