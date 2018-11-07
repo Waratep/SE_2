@@ -36,8 +36,8 @@ const getUserByIndex = (req, res) => {
 
 const editData = (req, res) => {
     console.log(req.body)
-    const { name, sername, Tel, passportnumber, roomid } = req.body
-    let query = db.query('UPDATE user SET name = ?, sername = ?,Tel = ?,passportnumber = ? WHERE roomid = ?', [name, sername, Tel, passportnumber,roomid], (err, data) => {
+    const { roomse, room, firstname, lastname, tel,id } = req.body
+    let query = db.query('UPDATE user SET firstname = ?, lastname = ?,tel = ?,id = ? WHERE roomse = ? and roomnum = ?', [firstname, lastname, tel, id,roomse,room], (err, data) => {
         console.log(query.sql)
         if (err) {
             res.status(500).json({
@@ -56,7 +56,7 @@ const editData = (req, res) => {
             else {
                 res.status(400).json({
                     success: false,
-                    msg: 'Wrong username or password'
+                    msg: 'Wrong room'
                 })
             }
         }

@@ -9,7 +9,7 @@ const pool = mysql.createPool({
 });
 
 pool.on('connection',()=>{
-    console.log("YAY");
+    // console.log("YAY");
     
 });
 
